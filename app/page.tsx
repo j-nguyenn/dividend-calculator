@@ -24,18 +24,22 @@ export default function PortfolioPage() {
     start_date: "",
   })
   const [selectedDate, setSelectedDate] = useState<Date>()
+  const isInitialLoad = React.useRef(true)
 
   // Load portfolio from localStorage on mount
   useEffect(() => {
     const stored = localStorage.getItem("portfolio")
     if (stored) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPortfolioItems(JSON.parse(stored))
     }
   }, [])
 
-  // Sync portfolio to localStorage whenever it changes
+  // Sync portfolio to localStorage whenever it changes (skip initial render)
   useEffect(() => {
+    if (isInitialLoad.current) {
+      isInitialLoad.current = false
+      return
+    }
     localStorage.setItem("portfolio", JSON.stringify(portfolioItems))
   }, [portfolioItems])
 
