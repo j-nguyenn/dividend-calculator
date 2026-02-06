@@ -12,11 +12,12 @@ import {
   SortingState,
   RowData,
 } from "@tanstack/react-table"
-import { ArrowUpDown, ArrowLeft } from "lucide-react"
+import { ArrowUpDown, ArrowLeft, TrendingUp } from "lucide-react"
 import { format, isAfter, isBefore, startOfDay, subMonths, subYears, subQuarters, startOfQuarter } from "date-fns"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { ThemeToggle } from "@/components/theme-toggle"
 import {
   Select,
   SelectContent,
@@ -373,18 +374,32 @@ export default function ResultsPage() {
     <div className="container mx-auto py-6 px-4 max-w-[1400px]">
       {/* Header */}
       <div className="mb-6">
-        <Button
-          variant="ghost"
-          onClick={() => router.push("/")}
-          className="mb-4"
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Portfolio
-        </Button>
-        <h1 className="text-4xl font-bold mb-2">Dividend History</h1>
-        <p className="text-muted-foreground">
-          Your dividend earnings from portfolio holdings
-        </p>
+        <div className="flex items-center justify-between">
+          <Button
+            variant="ghost"
+            onClick={() => router.push("/")}
+            className=""
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Portfolio
+          </Button>
+          <ThemeToggle />
+        </div>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-4xl font-bold mb-2">Dividend History</h1>
+            <p className="text-muted-foreground">
+              Your dividend earnings from portfolio holdings
+            </p>
+          </div>
+          <Button
+            onClick={() => router.push("/projection")}
+            className="shrink-0"
+          >
+            <TrendingUp className="mr-2 h-4 w-4" />
+            Projection
+          </Button>
+        </div>
       </div>
 
       <div className="flex gap-4">

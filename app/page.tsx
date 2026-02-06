@@ -8,6 +8,7 @@ import { format } from "date-fns"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { ThemeToggle } from "@/components/theme-toggle"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Calendar } from "@/components/ui/calendar"
@@ -149,10 +150,15 @@ export default function PortfolioPage() {
   return (
     <div className="container mx-auto py-10 px-4 max-w-4xl">
       <div className="mb-6">
-        <h1 className="text-4xl font-bold mb-1">Dividend Calculator</h1>
-        <p className="text-muted-foreground text-sm">
-          Build your portfolio and calculate dividend earnings
-        </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-4xl font-bold mb-1">Dividend Calculator</h1>
+            <p className="text-muted-foreground text-sm">
+              Build your portfolio and calculate dividend earnings
+            </p>
+          </div>
+          <ThemeToggle />
+        </div>
       </div>
 
       <Card className="mb-4">
