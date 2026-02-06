@@ -10,6 +10,8 @@ export interface Dividend {
   ticker: string;
   currency: string;
   dividend: number;
+  price_per_share: number;
+  dividend_yield: number;
 }
 
 export interface DividendResponse {
@@ -20,6 +22,5 @@ export interface DividendResponse {
 
 export interface CalculatedDividend extends Dividend {
   shares: number;
-  pricePerShare: number;
   total: number;
 }

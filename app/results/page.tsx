@@ -105,7 +105,6 @@ export default function ResultsPage() {
             const calculatedDividends: CalculatedDividend[] = data.dividends.map((div) => ({
               ...div,
               shares: item.amount,
-              pricePerShare: 0,
               total: div.dividend * item.amount,
             }))
 
@@ -138,22 +137,23 @@ export default function ResultsPage() {
         return (
           <Button
             variant="ghost"
+            className="px-2"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Payment Date
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            Date
+            <ArrowUpDown className="ml-1 h-3 w-3" />
           </Button>
         )
       },
       cell: ({ row }) => {
-        return format(new Date(row.getValue("payment_date")), "MMM d, yyyy")
+        return <div className="whitespace-nowrap text-center">{format(new Date(row.getValue("payment_date")), "MMM d, yyyy")}</div>
       },
     },
     {
       accessorKey: "ticker",
-      header: "Ticker",
+      header: () => <div className="text-center">Ticker</div>,
       cell: ({ row }) => {
-        return <div className="uppercase font-medium">{row.getValue("ticker")}</div>
+        return <div className="uppercase font-medium text-center">{row.getValue("ticker")}</div>
       },
     },
     {
@@ -162,10 +162,11 @@ export default function ResultsPage() {
         return (
           <Button
             variant="ghost"
+            className="px-2"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Number of Shares
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            Shares
+            <ArrowUpDown className="ml-1 h-3 w-3" />
           </Button>
         )
       },
@@ -174,31 +175,33 @@ export default function ResultsPage() {
           initialValue={getValue() as number}
           onUpdate={(v) => table.options.meta?.updateData(index, id, v)}
           step="1"
-          className="w-20 text-right border rounded px-2 py-1 bg-transparent focus:outline-none focus:ring-1 focus:ring-ring"
+          className="w-16 text-center border rounded px-1 py-1 bg-transparent focus:outline-none focus:ring-1 focus:ring-ring mx-auto block"
         />
       ),
     },
     {
-      accessorKey: "pricePerShare",
+      accessorKey: "price_per_share",
       header: ({ column }) => {
         return (
           <Button
             variant="ghost"
+            className="px-2"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Price per Share
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            Price
+            <ArrowUpDown className="ml-1 h-3 w-3" />
           </Button>
         )
       },
-      cell: ({ getValue, row: { index }, column: { id }, table }) => (
-        <EditableNumberCell
-          initialValue={getValue() as number}
-          onUpdate={(v) => table.options.meta?.updateData(index, id, v)}
-          step="0.01"
-          className="w-24 text-right border rounded px-2 py-1 bg-transparent focus:outline-none focus:ring-1 focus:ring-ring"
-        />
-      ),
+      cell: ({ row }) => {
+        const amount = parseFloat(row.getValue("price_per_share"))
+        const currency = row.original.currency
+        const formatted = new Intl.NumberFormat("en-US", {
+          style: "currency",
+          currency: currency,
+        }).format(amount)
+        return <div className="text-center">{formatted}</div>
+      },
     },
     {
       accessorKey: "dividend",
@@ -206,10 +209,11 @@ export default function ResultsPage() {
         return (
           <Button
             variant="ghost"
+            className="px-2"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Dividend/Share
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            Div/Share
+            <ArrowUpDown className="ml-1 h-3 w-3" />
           </Button>
         )
       },
@@ -218,9 +222,28 @@ export default function ResultsPage() {
           initialValue={getValue() as number}
           onUpdate={(v) => table.options.meta?.updateData(index, id, v)}
           step="0.01"
-          className="w-24 text-right border rounded px-2 py-1 bg-transparent focus:outline-none focus:ring-1 focus:ring-ring"
+          className="w-20 text-center border rounded px-1 py-1 bg-transparent focus:outline-none focus:ring-1 focus:ring-ring mx-auto block"
         />
       ),
+    },
+    {
+      accessorKey: "dividend_yield",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            className="px-2"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Yield
+            <ArrowUpDown className="ml-1 h-3 w-3" />
+          </Button>
+        )
+      },
+      cell: ({ row }) => {
+        const value = parseFloat(row.getValue("dividend_yield"))
+        return <div className="text-center">{value.toFixed(4)}%</div>
+      },
     },
     {
       accessorKey: "total",
@@ -228,10 +251,11 @@ export default function ResultsPage() {
         return (
           <Button
             variant="ghost"
+            className="px-2"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Total Earned
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            Total
+            <ArrowUpDown className="ml-1 h-3 w-3" />
           </Button>
         )
       },
@@ -242,7 +266,7 @@ export default function ResultsPage() {
           style: "currency",
           currency: currency,
         }).format(amount)
-        return <div className="text-right font-medium">{formatted}</div>
+        return <div className="text-center font-medium">{formatted}</div>
       },
     },
   ]
@@ -287,7 +311,7 @@ export default function ResultsPage() {
   }
 
   return (
-    <div className="container mx-auto py-10 px-4 max-w-6xl">
+    <div className="container mx-auto py-10 px-4 max-w-7xl">
       <div className="mb-6">
         <Button
           variant="ghost"
@@ -302,24 +326,6 @@ export default function ResultsPage() {
           Your dividend earnings from portfolio holdings
         </p>
       </div>
-
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle>Total Earnings</CardTitle>
-          <CardDescription>Cumulative dividends received</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="text-4xl font-bold text-primary">
-            {new Intl.NumberFormat("en-US", {
-              style: "currency",
-              currency: "USD",
-            }).format(totalEarnings)}
-          </div>
-          <p className="text-sm text-muted-foreground mt-2">
-            From {dividendData.length} dividend {dividendData.length === 1 ? "payment" : "payments"}
-          </p>
-        </CardContent>
-      </Card>
 
       <Card>
         <CardHeader>
@@ -336,7 +342,7 @@ export default function ResultsPage() {
                   <TableRow key={headerGroup.id}>
                     {headerGroup.headers.map((header) => {
                       return (
-                        <TableHead key={header.id}>
+                        <TableHead key={header.id} className="text-center">
                           {header.isPlaceholder
                             ? null
                             : flexRender(
@@ -357,7 +363,7 @@ export default function ResultsPage() {
                       data-state={row.getIsSelected() && "selected"}
                     >
                       {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id}>
+                        <TableCell key={cell.id} className="text-center">
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext()
